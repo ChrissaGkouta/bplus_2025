@@ -1,11 +1,4 @@
-#ifndef BP_INDEX_NODE_H
-#define BP_INDEX_NODE_H
-/* Στο αντίστοιχο αρχείο .h μπορείτε να δηλώσετε τις συναρτήσεις
- * και τις δομές δεδομένων που σχετίζονται με τους Κόμβους Δεδομένων.*/
 
-#endif
-
-// include/bplus_index_node.h
 #ifndef BP_INDEX_NODE_H
 #define BP_INDEX_NODE_H
 
@@ -22,19 +15,47 @@ typedef struct {
 } IndexNode;
 
 // Δηλώσεις βοηθητικών συναρτήσεων
+
+/**
+ * @brief Αρχικοποιεί έναν κόμβο ευρετηρίου.
+ * @param node Δείκτης στον κόμβο.
+ */
 void indexnode_init(IndexNode* node);
-// ... δηλώσεις για find_child, insert_entry, split, κ.λπ.
 
-#endif
-
-// include/bplus_index_node.h
-
-// ... (Οι προηγούμενοι ορισμοί IndexNode, indexnode_init παραμένουν) ...
-
-// ΠΡΟΣΘΗΚΗ: Συνάρτηση εκτύπωσης Index Node
-void indexnode_print(const IndexNode* node);
-
-// ΠΡΟΣΘΗΚΗ: Συνάρτηση εύρεσης επόμενου block ID για αναζήτηση
+/**
+ * @brief Βρίσκει το επόμενο Block ID (παιδί) για αναζήτηση.
+ * @param node Ο κόμβος ευρετηρίου.
+ * @param key Το κλειδί που ψάχνουμε.
+ * @return Το Block ID του παιδιού.
+ */
 int indexnode_find_child(const IndexNode* node, int key);
+
+/**
+ * @brief Εισάγει ένα entry (Κλειδί, Δείκτης) στον κόμβο.
+ * @param node Ο κόμβος ευρετηρίου.
+ * @param max_keys Μέγιστο πλήθος κλειδιών.
+ * @param key Το κλειδί που ανεβαίνει από το παιδί.
+ * @param right_child Ο δείκτης δεξιά του κλειδιού.
+ * @return 0 σε επιτυχία, -1 αν χρειάζεται split.
+ */
+int indexnode_insert_entry(IndexNode* node, int max_keys, int key, int right_child);
+
+/**
+ * @brief Διασπά έναν γεμάτο κόμβο ευρετηρίου.
+ * @param old_node Ο παλιός κόμβος.
+ * @param new_node Ο νέος κόμβος.
+ * @param new_key Το κλειδί προς εισαγωγή.
+ * @param new_pointer Ο δείκτης προς εισαγωγή.
+ * @param max_keys Μέγιστη χωρητικότητα.
+ * @param pivot_key Δείκτης για επιστροφή του Pivot κλειδιού (Push Up).
+ * @return 0 σε επιτυχία.
+ */
+int indexnode_split(IndexNode* old_node, IndexNode* new_node, int new_key, int new_pointer,
+                    int max_keys, int* pivot_key);
+
+/**
+ * @brief Εκτυπώνει τον κόμβο ευρετηρίου.
+ */
+void indexnode_print(const IndexNode* node);
 
 #endif
